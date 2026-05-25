@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SAS Pickleball Mini Tournament — Player Assessment</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --panel:#111a2e;
+    --panel-2:#16223d;
+    --ink:#e8eefc;
+    --muted:#9aa7c2;
+    --brand:#7CFC00;
+    --brand-2:#00d4ff;
+    --accent:#ffb800;
+    --danger:#ff5577;
+    --ring:rgba(124,252,0,.35);
+    --border:#243152;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;line-height:1.5;min-height:100vh}
+
+  /* Page wrapper */
+  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+
+  /* Badge above card */
+  .top-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(124,252,0,.12);color:var(--brand);
+    border:1px solid rgba(124,252,0,.35);
+    padding:6px 14px;border-radius:999px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+    margin-bottom:18px;
+  }
+
+  /* Main wizard card */
+  .wizard{
+    width:100%;max-width:900px;
+    background:var(--panel);border:1px solid var(--border);border-radius:24px;
+    display:flex;overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.45);
+  }
+
+  /* ── LEFT SIDEBAR ── */
+  .sidebar{
+    width:240px;flex-shrink:0;
+    background:var(--panel-2);border-right:1px solid var(--border);
+    padding:32px 24px;display:flex;flex-direction:column;
+  }
+  .sidebar-logo{
+    font-size:22px;font-weight:800;letter-spacing:-.03em;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:28px;
+  }
+  .sidebar-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:28px}
+
+  /* Step list */
+  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+  .step-item{display:flex;align-items:flex-start;gap:14px;position:relative;padding-bottom:28px}
+  .step-item:last-child{padding-bottom:0}
+
+  /* Vertical connector line */
+  .step-item:not(:last-child)::after{
+    content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;
+    background:var(--border);
+  }
+  .step-item.done:not(:last-child)::after{ background:var(--brand); }
+  .step-item.active:not(:last-child)::after{ background:linear-gradient(to bottom, var(--brand), var(--border)); }
+
+  /* Step circle */
+  .step-dot{
+    width:32px;height:32px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;
+    border:2px solid var(--border);background:var(--panel);color:var(--muted);
+    position:relative;z-index:1;transition:all .2s ease;
+  }
+  .step-item.done .step-dot{
+    background:var(--brand);border-color:var(--brand);color:#08111f;
+  }
+  .step-item.active .step-dot{
+    background:transparent;border-color:var(--brand);color:var(--brand);
+    box-shadow:0 0 0 4px rgba(124,252,0,.2);
+  }
+
+  /* Checkmark SVG for done */
+  .check-icon{width:16px;height:16px;stroke:#08111f;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .step-label{padding-top:5px}
+  .step-label span{display:block;font-size:13px;font-weight:600;color:var(--muted);transition:color .2s}
+  .step-item.active .step-label span{color:var(--ink)}
+  .step-item.done .step-label span{color:var(--brand)}
+
+  .sidebar-footer{margin-top:auto;padding-top:24px;font-size:12px;color:var(--muted)}
+
+  /* ── RIGHT CONTENT ── */
+  .content{flex:1;padding:36px 36px 28px;display:flex;flex-direction:column;min-height:520px;overflow:hidden}
+
+  .step-panel{display:none;flex-direction:column;flex:1}
+  .step-panel.active{display:flex}
+
+  .step-header{margin-bottom:24px}
+  .step-header h2{margin:0 0 4px;font-size:22px;letter-spacing:-.02em}
+  .step-header p{margin:0;color:var(--muted);font-size:14px}
+
+  .divider{height:1px;background:var(--border);margin:18px 0}
+
+  /* Form fields */
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid.full{grid-template-columns:1fr}
+  @media(max-width:640px){.grid,.grid.three{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:6px}
+  label.lbl{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .req{color:var(--brand)}
+  input[type=text],input[type=email],input[type=number],input[type=date],select,textarea{
+    width:100%;background:var(--panel-2);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:11px 14px;
+    font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s;
+  }
+  textarea{min-height:80px;resize:vertical}
+  input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 4px var(--ring)}
+  .help{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* Pills */
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+  .pill{
+    position:relative;cursor:pointer;user-select:none;
+    background:var(--panel-2);border:1px solid var(--border);
+    padding:8px 12px;border-radius:10px;font-size:13px;color:var(--ink);
+    transition:all .12s ease;
+  }
+  .pill input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .pill:hover{border-color:#3a4a78}
+  .pill:has(input:checked){background:rgba(124,252,0,.12);border-color:var(--brand);color:var(--brand)}
+
+  /* Range */
+  .range-row{display:flex;align-items:center;gap:12px}
+  .range-row input[type=range]{flex:1;accent-color:var(--brand)}
+  .range-val{
+    min-width:48px;text-align:center;background:var(--panel-2);border:1px solid var(--border);
+    border-radius:8px;padding:6px 8px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--brand)
+  }
+  .legend{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:6px}
+
+  details summary{cursor:pointer;color:var(--muted);font-size:13px;padding:6px 0;list-style:none}
+  details summary::before{content:"▸  "}
+  details[open] summary{color:var(--ink)}
+  details[open] summary::before{content:"▾  "}
+
+  /* Summary review */
+  .summary-group{margin-bottom:20px}
+  .summary-group h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin:0 0 10px}
+  .summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+  .summary-row:last-child{border-bottom:none}
+  .summary-row .key{color:var(--muted);flex-shrink:0}
+  .summary-row .val{color:var(--ink);text-align:right}
+
+  /* Navigation */
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:24px;border-top:1px solid var(--border)}
+  .nav-left{display:flex;gap:8px;align-items:center}
+  .nav-right{display:flex;gap:8px;align-items:center}
+  button,.btn{
+    cursor:pointer;border:none;border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;
+    transition:transform .08s ease, filter .15s ease, opacity .15s;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#08111f;
+  }
+  .btn-primary:hover{filter:brightness(1.07)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{
+    background:transparent;color:var(--ink);border:1px solid var(--border);
+  }
+  .btn-ghost:hover{border-color:#3a4a78;background:var(--panel-2)}
+  .btn-ghost:disabled{opacity:.35;cursor:not-allowed}
+  .btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(255,85,119,.35)}
+  .btn-danger:hover{background:rgba(255,85,119,.08)}
+
+  .step-counter{font-size:13px;color:var(--muted)}
+
+  /* Success screen */
+  .success{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:16px;padding:40px 0}
+  .success.active{display:flex}
+  .success-icon{
+    width:72px;height:72px;border-radius:50%;
+    background:rgba(124,252,0,.15);border:2px solid var(--brand);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;
+  }
+  .success h2{margin:0;font-size:26px}
+  .success p{color:var(--muted);max-width:380px;margin:0}
+
+  /* Admin bar */
+  .admin{
+    width:100%;max-width:900px;
+    margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+    color:var(--muted);font-size:13px;padding:0 4px;
+  }
+  .admin .right{display:flex;gap:8px;flex-wrap:wrap}
+  .count{background:var(--panel);border:1px solid var(--border);padding:6px 12px;border-radius:8px;color:var(--ink)}
+
+  /* Toast */
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:#0e1d12;border:1px solid rgba(124,252,0,.45);color:var(--brand);
+    padding:12px 20px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;
+    transition:opacity .25s, transform .25s;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* Responsive */
+  @media(max-width:700px){
+    .sidebar{display:none}
+    .content{padding:24px 20px 20px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-badge">🏓 SAS Company Tournament</div>
+
+  <div class="wizard">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">SAS 🏓</div>
+      <div class="sidebar-title">Player Assessment</div>
+
+      <ul class="steps" id="stepList">
+        <li class="step-item active" data-step="0">
+          <div class="step-dot">1</div>
+          <div class="step-label"><span>About You</span></div>
+        </li>
+        <li class="step-item" data-step="1">
+          <div class="step-dot">2</div>
+          <div class="step-label"><span>Experience</span></div>
+        </li>
+        <li class="step-item" data-step="2">
+          <div class="step-dot">3</div>
+          <div class="step-label"><span>Skill Rating</span></div>
+        </li>
+        <li class="step-item" data-step="3">
+          <div class="step-dot">4</div>
+          <div class="step-label"><span>Background</span></div>
+        </li>
+        <li class="step-item" data-step="4">
+          <div class="step-dot">5</div>
+          <div class="step-label"><span>Review &amp; Submit</span></div>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">Balanced teams · Fair brackets · Friendly rallies</div>
+    </aside>
+
+    <!-- ── CONTENT ── -->
+    <div class="content">
+
+      <!-- STEP 1: About You -->
+      <div class="step-panel active" id="panel-0">
+        <div class="step-header">
+          <h2>About You</h2>
+          <p>Basics so we can contact you and assign you to a team.</p>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="lbl">Full Name <span class="req">*</span></label>
+            <input type="text" name="fullName" id="fullName" required placeholder="Juan Dela Cruz" />
+          </div>
+          <div class="field">
+            <label class="lbl">Email <span class="req">*</span></label>
+            <input type="email" name="email" id="email" required placeholder="you@sas.com" />
+          </div>
+          <div class="field">
+            <label class="lbl">Department / Team</label>
+            <input type="text" name="department" id="department" placeholder="e.g. Engineering, HR, Finance" />
+          </div>
+          <div class="field">
+            <label class="lbl">Gender <span style="font-weight:400;text-transform:none;font-size:11px">(optional — helps balance brackets)</span></label>
+            <select name="gender" id="gender">
+              <option value="">Prefer not to say</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Non-binary</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="nav-left">
+            <button class="btn btn-ghost" disabled>Back</button>
+          </div>
+          <div class="nav-right">
+            <span class="step-counter">Step 1 of 5</span>
+            <button class="btn btn-primary" onclick="goNext(0)">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Experience -->
+      <div class="step-panel" id="panel-1">
+        <div class="step-header">
+          <h2>Pickleball Experience</h2>
+          <p>How long and how often you've played helps us build balanced brackets.</p>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="lbl">How long have you been playing? <span class="req">*</span></label>
+            <select name="yearsPlaying" id="yearsPlaying" required>
+              <option value="">Select…</option>
+              <option>Never played before</option>
+              <option>Less than 1 month</option>
+              <option>1–6 months</option>
+              <option>6–12 months</option>
+              <option>1–2 years</option>
+              <option>2–5 years</option>
+              <option>5+ years</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">How often do you play right now?</label>
+            <select name="frequency" id="frequency">
+              <option value="">Select…</option>
+              <option>Never</option>
+              <option>Rarely (a few times a year)</option>
+              <option>Monthly</option>
+              <option>Weekly</option>
+              <option>2–3× per week</option>
+              <option>4+ × per week</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Approx. total games played</label>
+            <select name="totalGames" id="totalGames">
+              <option value="">Select…</option>
+              <option>0</option>
+              <option>1–10</option>
+              <option>11–50</option>
+              <option>51–200</option>
+              <option>200+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">When did you last play?</label>
+            <select name="lastPlayed" id="lastPlayed">
+              <option value="">Select…</option>
+              <option>This week</option>
+              <option>This month</option>
+              <option>1–3 months ago</option>
+              <option>3–12 months ago</option>
+              <option>Over a year ago</option>
+              <option>Never</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Lessons / coaching?</label>
+            <div class="pills">
+              <label class="pill"><input type="radio" name="lessons" value="None"/>None</label>
+              <label class="pill"><input type="radio" name="lessons" value="A few"/>A few</label>
+              <label class="pill"><input type="radio" name="lessons" value="Regular"/>Regular</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Tournament experience</label>
+            <select name="tournamentExp" id="tournamentExp">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Casual / company events only</option>
+              <option>Local tournaments</option>
+              <option>Rated / sanctioned tournaments</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="nav-left">
+            <button class="btn btn-ghost" onclick="goBack(1)">← Back</button>
+          </div>
+          <div class="nav-right">
+            <span class="step-counter">Step 2 of 5</span>
+            <button class="btn btn-primary" onclick="goNext(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Skill Rating -->
+      <div class="step-panel" id="panel-2">
+        <div class="step-header">
+          <h2>Skill Self-Rating</h2>
+          <p>Slide to your honest level. <b>1</b> = total beginner · <b>10</b> = tournament-level.</p>
+        </div>
+
+        <div class="field">
+          <label class="lbl">Your overall pickleball skill</label>
+          <div class="range-row">
+            <input type="range" min="1" max="10" step="0.5" value="3" name="selfRating" id="selfRating" />
+            <div class="range-val" id="selfRatingVal">3.0</div>
+          </div>
+          <div class="legend">
+            <span>1 — Never held a paddle</span>
+            <span>5 — Comfortable rec player</span>
+            <span>10 — Tournament-level</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <details>
+          <summary>Reference: what each level roughly means</summary>
+          <ul style="color:var(--muted);font-size:13px;line-height:1.8;margin:10px 0 0 18px;padding:0">
+            <li><b>1–2:</b> Brand new. Still learning the score and how to serve.</li>
+            <li><b>3–4:</b> Can rally a few shots, understands the kitchen rule, working on consistency.</li>
+            <li><b>5–6:</b> Consistent serves and returns, can sustain dinks, knows positioning.</li>
+            <li><b>7–8:</b> Strategic play, third-shot drops, can attack and reset under pressure.</li>
+            <li><b>9–10:</b> Tournament-level — controls pace, advanced shot selection.</li>
+          </ul>
+        </details>
+
+        <div class="nav">
+          <div class="nav-left">
+            <button class="btn btn-ghost" onclick="goBack(2)">← Back</button>
+          </div>
+          <div class="nav-right">
+            <span class="step-counter">Step 3 of 5</span>
+            <button class="btn btn-primary" onclick="goNext(2)">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Athletic Background + Equipment -->
+      <div class="step-panel" id="panel-3">
+        <div class="step-header">
+          <h2>Athletic Background &amp; Equipment</h2>
+          <p>Cross-sport skills transfer to pickleball — and we need to know about paddle availability.</p>
+        </div>
+
+        <div class="field">
+          <label class="lbl">Other racquet/paddle sports you've played (pick all)</label>
+          <div class="pills">
+            <label class="pill"><input type="checkbox" name="racquetSports" value="Tennis"/>Tennis</label>
+            <label class="pill"><input type="checkbox" name="racquetSports" value="Badminton"/>Badminton</label>
+            <label class="pill"><input type="checkbox" name="racquetSports" value="Table tennis"/>Table tennis</label>
+            <label class="pill"><input type="checkbox" name="racquetSports" value="Squash"/>Squash</label>
+            <label class="pill"><input type="checkbox" name="racquetSports" value="Padel"/>Padel</label>
+            <label class="pill"><input type="checkbox" name="racquetSports" value="None"/>None</label>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="lbl">General fitness level</label>
+            <div class="range-row">
+              <input type="range" min="1" max="10" step="1" value="5" name="fitness" id="fitness"/>
+              <div class="range-val" id="fitnessVal">5</div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Exercise frequency</label>
+            <select name="exerciseFreq" id="exerciseFreq">
+              <option value="">Select…</option>
+              <option>Rarely</option>
+              <option>1–2× a week</option>
+              <option>3–4× a week</option>
+              <option>5+ × a week</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Any injuries we should know about?</label>
+            <input type="text" name="injuries" id="injuries" placeholder="e.g. knee, shoulder, none" />
+          </div>
+          <div class="field">
+            <label class="lbl">Other sports background</label>
+            <input type="text" name="otherSports" id="otherSports" placeholder="e.g. basketball, volleyball, running" />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label class="lbl">Do you own a paddle?</label>
+          <div class="pills">
+            <label class="pill"><input type="radio" name="paddle" value="Yes"/>Yes, I have one</label>
+            <label class="pill"><input type="radio" name="paddle" value="No"/>No, need to borrow</label>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="nav-left">
+            <button class="btn btn-ghost" onclick="goBack(3)">← Back</button>
+          </div>
+          <div class="nav-right">
+            <span class="step-counter">Step 4 of 5</span>
+            <button class="btn btn-primary" onclick="goNext(3)">Review →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Review & Submit -->
+      <div class="step-panel" id="panel-4">
+        <div class="step-header">
+          <h2>Review &amp; Submit</h2>
+          <p>Double-check your info before submitting. Use Back to make changes.</p>
+        </div>
+
+        <div id="summaryContent" style="flex:1;overflow-y:auto"></div>
+
+        <div class="nav">
+          <div class="nav-left">
+            <button class="btn btn-ghost" onclick="goBack(4)">← Back</button>
+          </div>
+          <div class="nav-right">
+            <span class="step-counter">Step 5 of 5</span>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Assessment ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS SCREEN -->
+      <div class="success" id="successScreen">
+        <div class="success-icon">🏓</div>
+        <h2>You're in!</h2>
+        <p>Your assessment has been saved. The organizer will use it to build fair, balanced doubles teams.</p>
+        <button class="btn btn-ghost" onclick="resetAll()">Submit another response</button>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /wizard -->
+
+  <!-- Admin bar -->
+  <div class="admin">
+    <span class="count">Submissions on this device: <b id="count">0</b></span>
+    <div class="right">
+      <button class="btn btn-ghost" id="exportBtn" type="button" style="font-size:13px;padding:8px 14px">Export CSV</button>
+      <button class="btn btn-ghost" id="exportJsonBtn" type="button" style="font-size:13px;padding:8px 14px">Export JSON</button>
+      <button class="btn btn-danger" id="clearBtn" type="button" style="font-size:13px;padding:8px 14px">Clear all</button>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Range bubbles ──
+  const rangePairs = [
+    ["selfRating","selfRatingVal", v=>Number(v).toFixed(1)],
+    ["fitness","fitnessVal"],
+  ];
+  rangePairs.forEach(([i,o,fmt])=>{
+    const input = document.getElementById(i), out = document.getElementById(o);
+    if(!input||!out) return;
+    const update = ()=> out.textContent = fmt ? fmt(input.value) : input.value;
+    input.addEventListener("input", update); update();
+  });
+
+  // ── Storage ──
+  const KEY = "sasPickleballSubmissions";
+  const loadAll = ()=>{ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } };
+  const saveAll = arr=> localStorage.setItem(KEY, JSON.stringify(arr));
+  const updateCount = ()=> document.getElementById("count").textContent = loadAll().length;
+  updateCount();
+
+  // ── Toast ──
+  const toastEl = document.getElementById("toast");
+  const showToast = msg=>{
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(()=>toastEl.classList.remove("show"), 2400);
+  };
+
+  // ── Step state ──
+  let currentStep = 0;
+  const TOTAL = 5;
+
+  function goNext(from){
+    if(!validateStep(from)) return;
+    if(from === TOTAL-2) buildSummary(); // going to review step
+    setStep(from+1);
+  }
+  function goBack(from){ setStep(from-1); }
+
+  function setStep(to){
+    // hide all panels
+    document.querySelectorAll(".step-panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById("panel-"+to).classList.add("active");
+
+    // update sidebar
+    document.querySelectorAll(".step-item").forEach((item,i)=>{
+      item.classList.remove("active","done");
+      if(i < to) item.classList.add("done");
+      else if(i === to) item.classList.add("active");
+      // swap dot content
+      const dot = item.querySelector(".step-dot");
+      if(i < to){
+        dot.innerHTML = `<svg class="check-icon" viewBox="0 0 16 16"><polyline points="2,9 6,13 14,4"/></svg>`;
+      } else {
+        dot.innerHTML = String(i+1);
+      }
+    });
+
+    currentStep = to;
+  }
+
+  // ── Validation ──
+  function validateStep(step){
+    if(step === 0){
+      const name = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      if(!name){ showToast("Please enter your full name."); return false; }
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast("Please enter a valid email address."); return false; }
+    }
+    if(step === 1){
+      const yp = document.getElementById("yearsPlaying").value;
+      if(!yp){ showToast("Please select how long you've been playing."); return false; }
+    }
+    return true;
+  }
+
+  // ── Collect all form data ──
+  function collectData(){
+    const data = { submittedAt: new Date().toISOString() };
+    // text / select / email fields
+    ["fullName","email","department","gender",
+     "yearsPlaying","frequency","totalGames","lastPlayed","tournamentExp",
+     "selfRating","fitness","exerciseFreq","injuries","otherSports"].forEach(id=>{
+      const el = document.getElementById(id)||document.querySelector(`[name="${id}"]`);
+      if(el) data[id] = el.value;
+    });
+    // radios
+    ["lessons","paddle"].forEach(name=>{
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      data[name] = checked ? checked.value : "";
+    });
+    // checkboxes (multi)
+    const cbVals = [...document.querySelectorAll('input[name="racquetSports"]:checked')].map(c=>c.value);
+    data.racquetSports = cbVals.join("; ");
+    return data;
+  }
+
+  // ── Build summary ──
+  const LABELS = {
+    fullName:"Full Name", email:"Email", department:"Department", gender:"Gender",
+    yearsPlaying:"Years Playing", frequency:"Play Frequency", totalGames:"Total Games",
+    lastPlayed:"Last Played", lessons:"Lessons", tournamentExp:"Tournament Experience",
+    selfRating:"Skill Rating", fitness:"Fitness Level", exerciseFreq:"Exercise Frequency",
+    injuries:"Injuries", otherSports:"Other Sports", racquetSports:"Racquet Sports", paddle:"Owns Paddle",
+  };
+  const GROUPS = [
+    { title:"About You", keys:["fullName","email","department","gender"] },
+    { title:"Pickleball Experience", keys:["yearsPlaying","frequency","totalGames","lastPlayed","lessons","tournamentExp"] },
+    { title:"Skill Rating", keys:["selfRating"] },
+    { title:"Athletic Background & Equipment", keys:["fitness","exerciseFreq","racquetSports","injuries","otherSports","paddle"] },
+  ];
+
+  function buildSummary(){
+    const data = collectData();
+    const container = document.getElementById("summaryContent");
+    container.innerHTML = GROUPS.map(g=>`
+      <div class="summary-group">
+        <h3>${g.title}</h3>
+        ${g.keys.map(k=>{
+          const val = data[k];
+          if(!val) return "";
+          return `<div class="summary-row"><span class="key">${LABELS[k]||k}</span><span class="val">${val}</span></div>`;
+        }).join("")}
+      </div>
+    `).join("");
+  }
+
+  // ── Submit ──
+  function submitForm(){
+    const data = collectData();
+    const arr = loadAll(); arr.push(data); saveAll(arr);
+    updateCount();
+    // hide all panels, show success
+    document.querySelectorAll(".step-panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById("successScreen").classList.add("active");
+    // mark all steps done in sidebar
+    document.querySelectorAll(".step-item").forEach(item=>{
+      item.classList.remove("active");
+      item.classList.add("done");
+      item.querySelector(".step-dot").innerHTML = `<svg class="check-icon" viewBox="0 0 16 16"><polyline points="2,9 6,13 14,4"/></svg>`;
+    });
+  }
+
+  // ── Reset ──
+  function resetAll(){
+    document.getElementById("successScreen").classList.remove("active");
+    // clear inputs
+    document.querySelectorAll("input[type=text],input[type=email],select").forEach(el=>{ el.value=""; });
+    document.querySelectorAll("input[type=radio],input[type=checkbox]").forEach(el=>{ el.checked=false; });
+    document.getElementById("selfRating").value = 3;
+    document.getElementById("selfRatingVal").textContent = "3.0";
+    document.getElementById("fitness").value = 5;
+    document.getElementById("fitnessVal").textContent = "5";
+    setStep(0);
+  }
+
+  // ── Export CSV ──
+  function toCSV(rows){
+    if(!rows.length) return "";
+    const cols = Array.from(rows.reduce((s,r)=>{ Object.keys(r).forEach(k=>s.add(k)); return s; }, new Set()));
+    const esc = v=>{ if(v==null) return ""; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    return cols.join(",")+"\n"+rows.map(r=>cols.map(c=>esc(r[c])).join(",")).join("\n");
+  }
+  function download(filename, content, type="text/plain"){
+    const blob = new Blob([content],{type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },100);
+  }
+  document.getElementById("exportBtn").addEventListener("click",()=>{
+    const rows=loadAll(); if(!rows.length) return showToast("No submissions yet.");
+    download("pickleball-assessments.csv",toCSV(rows),"text/csv");
+  });
+  document.getElementById("exportJsonBtn").addEventListener("click",()=>{
+    const rows=loadAll(); if(!rows.length) return showToast("No submissions yet.");
+    download("pickleball-assessments.json",JSON.stringify(rows,null,2),"application/json");
+  });
+  document.getElementById("clearBtn").addEventListener("click",()=>{
+    if(!loadAll().length) return showToast("Already empty.");
+    if(confirm("Delete ALL submissions saved on this device? This cannot be undone.")){
+      localStorage.removeItem(KEY); updateCount(); showToast("Cleared.");
+    }
+  });
+</script>
+</body>
+</html>
