@@ -218,6 +218,17 @@
 </style>
 </head>
 <body>
+<!-- Hidden form so Netlify detects all field names at deploy time -->
+<form name="player-assessment" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="player-assessment" />
+  <input name="bot-field" />
+  <input name="fullName" /><input name="email" /><input name="department" /><input name="gender" />
+  <input name="yearsPlaying" /><input name="frequency" /><input name="totalGames" /><input name="lastPlayed" />
+  <input name="lessons" /><input name="tournamentExp" /><input name="selfRating" /><input name="fitness" />
+  <input name="exerciseFreq" /><input name="injuries" /><input name="otherSports" />
+  <input name="racquetSports" /><input name="paddle" /><input name="submittedAt" />
+</form>
+
 <div class="page">
 
   <div class="top-badge">🏓 SAS Company Tournament</div>
@@ -674,14 +685,47 @@
   }
 
   // ── Submit ──
-  function submitForm(){
+  async function submitForm(){
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting…";
+
     const data = collectData();
+
+    // Build URL-encoded body for Netlify Forms
+    const body = new URLSearchParams({
+      "form-name": "player-assessment",
+      "bot-field": "",
+      ...data
+    }).toString();
+
+    let netlifyOk = false;
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body
+      });
+      netlifyOk = res.ok;
+    } catch(err) {
+      netlifyOk = false;
+    }
+
+    // Always save to localStorage as backup
     const arr = loadAll(); arr.push(data); saveAll(arr);
     updateCount();
-    // hide all panels, show success
+
+    btn.disabled = false;
+    btn.textContent = "Submit Assessment ✓";
+
+    if(!netlifyOk){
+      // Still show success — data is in localStorage — but warn
+      showToast("Saved locally. (Netlify sync failed — check connection.)");
+    }
+
+    // Show success screen
     document.querySelectorAll(".step-panel").forEach(p=>p.classList.remove("active"));
     document.getElementById("successScreen").classList.add("active");
-    // mark all steps done in sidebar
     document.querySelectorAll(".step-item").forEach(item=>{
       item.classList.remove("active");
       item.classList.add("done");
