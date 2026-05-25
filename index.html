@@ -543,15 +543,6 @@
     </div><!-- /content -->
   </div><!-- /wizard -->
 
-  <!-- Admin bar -->
-  <div class="admin">
-    <span class="count">Submissions on this device: <b id="count">0</b></span>
-    <div class="right">
-      <button class="btn btn-ghost" id="exportBtn" type="button" style="font-size:13px;padding:8px 14px">Export CSV</button>
-      <button class="btn btn-ghost" id="exportJsonBtn" type="button" style="font-size:13px;padding:8px 14px">Export JSON</button>
-      <button class="btn btn-danger" id="clearBtn" type="button" style="font-size:13px;padding:8px 14px">Clear all</button>
-    </div>
-  </div>
 
 </div><!-- /page -->
 
@@ -574,8 +565,6 @@
   const KEY = "sasPickleballSubmissions";
   const loadAll = ()=>{ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } };
   const saveAll = arr=> localStorage.setItem(KEY, JSON.stringify(arr));
-  const updateCount = ()=> document.getElementById("count").textContent = loadAll().length;
-  updateCount();
 
   // ── Toast ──
   const toastEl = document.getElementById("toast");
@@ -708,7 +697,6 @@
 
     // Always save to localStorage as backup
     const arr = loadAll(); arr.push(data); saveAll(arr);
-    updateCount();
 
     btn.disabled = false;
     btn.textContent = "Submit Assessment ✓";
@@ -741,34 +729,6 @@
     setStep(0);
   }
 
-  // ── Export CSV ──
-  function toCSV(rows){
-    if(!rows.length) return "";
-    const cols = Array.from(rows.reduce((s,r)=>{ Object.keys(r).forEach(k=>s.add(k)); return s; }, new Set()));
-    const esc = v=>{ if(v==null) return ""; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
-    return cols.join(",")+"\n"+rows.map(r=>cols.map(c=>esc(r[c])).join(",")).join("\n");
-  }
-  function download(filename, content, type="text/plain"){
-    const blob = new Blob([content],{type});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href=url; a.download=filename; document.body.appendChild(a); a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },100);
-  }
-  document.getElementById("exportBtn").addEventListener("click",()=>{
-    const rows=loadAll(); if(!rows.length) return showToast("No submissions yet.");
-    download("pickleball-assessments.csv",toCSV(rows),"text/csv");
-  });
-  document.getElementById("exportJsonBtn").addEventListener("click",()=>{
-    const rows=loadAll(); if(!rows.length) return showToast("No submissions yet.");
-    download("pickleball-assessments.json",JSON.stringify(rows,null,2),"application/json");
-  });
-  document.getElementById("clearBtn").addEventListener("click",()=>{
-    if(!loadAll().length) return showToast("Already empty.");
-    if(confirm("Delete ALL submissions saved on this device? This cannot be undone.")){
-      localStorage.removeItem(KEY); updateCount(); showToast("Cleared.");
-    }
-  });
 </script>
 </body>
 </html>
