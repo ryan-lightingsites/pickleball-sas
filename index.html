@@ -839,7 +839,8 @@
 
 <script>
   // ── Footer year ──
-  document.getElementById("footerYear").textContent = new Date().getFullYear();
+  const footerYear = document.getElementById("footerYear");
+  if(footerYear) footerYear.textContent = new Date().getFullYear();
 
   // ── Range bubbles ──
   const rangePairs = [
