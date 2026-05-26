@@ -11,24 +11,25 @@
     --panel-2:#16223d;
     --ink:#e8eefc;
     --muted:#9aa7c2;
-    --brand:#7CFC00;
-    --brand-2:#00d4ff;
+    --brand:#5E14FF;
+    --brand-2:#8B56FF;
     --accent:#ffb800;
     --danger:#ff5577;
-    --ring:rgba(124,252,0,.35);
+    --ring:rgba(94,20,255,.35);
     --border:#243152;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;line-height:1.5;min-height:100vh}
 
   /* Page wrapper */
-  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 24px 0}
+  .page-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%}
 
   /* Badge above card */
   .top-badge{
     display:inline-flex;align-items:center;gap:8px;
-    background:rgba(124,252,0,.12);color:var(--brand);
-    border:1px solid rgba(124,252,0,.35);
+    background:rgba(94,20,255,.12);color:var(--brand);
+    border:1px solid rgba(94,20,255,.35);
     padding:6px 14px;border-radius:999px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
     margin-bottom:18px;
   }
@@ -48,9 +49,6 @@
     padding:32px 24px;display:flex;flex-direction:column;
   }
   .sidebar-logo{
-    font-size:22px;font-weight:800;letter-spacing:-.03em;
-    background:linear-gradient(135deg,var(--brand),var(--brand-2));
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
     margin-bottom:28px;
   }
   .sidebar-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:28px}
@@ -77,15 +75,15 @@
     position:relative;z-index:1;transition:all .2s ease;
   }
   .step-item.done .step-dot{
-    background:var(--brand);border-color:var(--brand);color:#08111f;
+    background:var(--brand);border-color:var(--brand);color:#ffffff;
   }
   .step-item.active .step-dot{
     background:transparent;border-color:var(--brand);color:var(--brand);
-    box-shadow:0 0 0 4px rgba(124,252,0,.2);
+    box-shadow:0 0 0 4px rgba(94,20,255,.2);
   }
 
   /* Checkmark SVG for done */
-  .check-icon{width:16px;height:16px;stroke:#08111f;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .check-icon{width:16px;height:16px;stroke:#ffffff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
   .step-label{padding-top:5px}
   .step-label span{display:block;font-size:13px;font-weight:600;color:var(--muted);transition:color .2s}
@@ -95,7 +93,7 @@
   .sidebar-footer{margin-top:auto;padding-top:24px;font-size:12px;color:var(--muted)}
 
   /* ── RIGHT CONTENT ── */
-  .content{flex:1;padding:36px 36px 28px;display:flex;flex-direction:column;min-height:520px;overflow:hidden}
+  .content{flex:1;padding:36px 36px 28px;display:flex;flex-direction:column;min-height:520px;overflow:visible}
 
   .step-panel{display:none;flex-direction:column;flex:1}
   .step-panel.active{display:flex}
@@ -110,7 +108,7 @@
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
   .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
   .grid.full{grid-template-columns:1fr}
-  @media(max-width:640px){.grid,.grid.three{grid-template-columns:1fr}}
+  /* grid collapses handled in mobile block below */
   .field{display:flex;flex-direction:column;gap:6px}
   label.lbl{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
   .req{color:var(--brand)}
@@ -133,7 +131,7 @@
   }
   .pill input{position:absolute;inset:0;opacity:0;cursor:pointer}
   .pill:hover{border-color:#3a4a78}
-  .pill:has(input:checked){background:rgba(124,252,0,.12);border-color:var(--brand);color:var(--brand)}
+  .pill:has(input:checked){background:rgba(94,20,255,.12);border-color:var(--brand);color:var(--brand)}
 
   /* Range */
   .range-row{display:flex;align-items:center;gap:12px}
@@ -166,7 +164,7 @@
     transition:transform .08s ease, filter .15s ease, opacity .15s;
   }
   .btn-primary{
-    background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#08111f;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#ffffff;
   }
   .btn-primary:hover{filter:brightness(1.07)}
   .btn-primary:active{transform:translateY(1px)}
@@ -185,7 +183,7 @@
   .success.active{display:flex}
   .success-icon{
     width:72px;height:72px;border-radius:50%;
-    background:rgba(124,252,0,.15);border:2px solid var(--brand);
+    background:rgba(94,20,255,.15);border:2px solid var(--brand);
     display:flex;align-items:center;justify-content:center;
     font-size:32px;
   }
@@ -204,16 +202,249 @@
   /* Toast */
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
-    background:#0e1d12;border:1px solid rgba(124,252,0,.45);color:var(--brand);
+    background:#0e0818;border:1px solid rgba(94,20,255,.45);color:var(--brand);
     padding:12px 20px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;
     transition:opacity .25s, transform .25s;z-index:50;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* Responsive */
+  /* ── IN-PANEL STEP PROGRESS (mobile only) ── */
+  .step-progress-wrap{margin-bottom:20px}
+  .step-progress-track{
+    height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:6px;
+  }
+  .step-progress-fill{
+    height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,var(--brand),var(--brand-2));
+    transition:width .4s cubic-bezier(.4,2,.55,1), background .3s ease;
+  }
+  .step-progress-fill.complete{background:linear-gradient(90deg,#22c55e,#4ade80)}
+  .step-progress-label{font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;transition:color .3s}
+  .step-progress-label.complete{color:#22c55e;font-weight:700}
+
+  /* ── EXTERNAL HEALTH BAR (desktop) ── */
+  .health-bar-wrap{
+    width:100%;max-width:900px;
+    margin-bottom:10px;
+    display:none; /* shown only on desktop below */
+  }
+  .health-bar-inner{
+    display:flex;align-items:center;gap:10px;
+  }
+  .health-bar-label{
+    font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);white-space:nowrap;flex-shrink:0;
+  }
+  .health-bar-track{
+    flex:1;height:10px;
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--border);
+    border-radius:99px;
+    overflow:hidden;
+    position:relative;
+  }
+  /* subtle scanline shine */
+  .health-bar-track::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(to bottom,rgba(255,255,255,.08) 0%,transparent 60%);
+    border-radius:99px;pointer-events:none;
+  }
+  .health-bar-fill{
+    height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,var(--brand),var(--brand-2));
+    transition:width .45s cubic-bezier(.4,2,.55,1), background .35s ease,
+                box-shadow .35s ease;
+    box-shadow:0 0 8px rgba(94,20,255,.5);
+  }
+  .health-bar-fill.complete{
+    background:linear-gradient(90deg,#16a34a,#22c55e,#4ade80);
+    box-shadow:0 0 10px rgba(34,197,94,.6);
+  }
+  .health-bar-pct{
+    font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;
+    color:var(--brand);min-width:34px;text-align:right;
+    transition:color .35s;flex-shrink:0;
+  }
+  .health-bar-pct.complete{color:#22c55e}
+
+  /* Health bar hit shake */
+  @keyframes hbar-hit{
+    0%  {transform:translateX(0)}
+    18% {transform:translateX(-3px)}
+    36% {transform:translateX(3px)}
+    54% {transform:translateX(-2px)}
+    72% {transform:translateX(2px)}
+    88% {transform:translateX(-1px)}
+    100%{transform:translateX(0)}
+  }
+  .health-bar-hit{animation:hbar-hit .32s ease}
+
+  @media(min-width:701px){
+    .health-bar-wrap{display:block}
+    .step-progress-wrap{display:none} /* hide inner bars on desktop */
+  }
+
+  /* Field fill pop + vibrate */
+  @keyframes field-pop{
+    0%  {transform:scale(1) translateX(0)}
+    20% {transform:scale(1.03) translateX(-2px)}
+    40% {transform:scale(1.02) translateX(2px)}
+    60% {transform:scale(1.01) translateX(-1px)}
+    80% {transform:scale(1.005) translateX(1px)}
+    100%{transform:scale(1) translateX(0)}
+  }
+  .field-pop{animation:field-pop .38s ease}
+
+  /* Confetti canvas */
+  #confettiCanvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    pointer-events:none;z-index:9999;
+  }
+
+  /* ── MOBILE STEP INDICATOR ── */
+  /* Hidden on desktop; shown on mobile via media query below */
+  .mobile-stepbar{
+    display:none;
+    flex-direction:column;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--border);
+    padding:10px 20px 0;
+    width:100%; /* span full width as a wizard sibling */
+    flex-shrink:0;
+  }
+  .msb-top{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .msb-logo{height:18px;width:auto;opacity:.85}
+  .msb-logo{height:20px;width:auto;opacity:.85}
+  .msb-counter{
+    font-size:11px;font-weight:700;
+    color:var(--muted);letter-spacing:.1em;text-transform:uppercase;
+  }
+  /* Thin 2px step-progress line flush to the bottom edge */
+  .msb-progress{height:2px;background:var(--border)}
+  .msb-progress-fill{
+    height:100%;background:var(--brand);
+    transition:width .4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── MOBILE RESPONSIVE ── */
   @media(max-width:700px){
+    /* Page — truly flush, no gaps */
+    html,body{height:100%}
+    .page{padding:0;margin:0;min-height:100svh;justify-content:flex-start}
+    .page-center{justify-content:flex-start;padding:0;align-items:stretch;width:100%}
+
+    /* Wizard: native full-screen feel */
+    .wizard{
+      border-radius:0;border:none;
+      flex-direction:column;min-height:100svh;box-shadow:none;
+      width:100%;
+    }
+
+    /* Sidebar hidden; mobile step indicator shown */
     .sidebar{display:none}
-    .content{padding:24px 20px 20px}
+    .mobile-stepbar{display:flex}
+
+    /* Content — generous top breathing room after the top bar */
+    .content{
+      padding:32px 20px 40px;
+      min-height:unset;flex:1;
+    }
+
+    /* Step header — strong hierarchy anchor */
+    .step-header{margin-bottom:28px}
+    .step-header h2{
+      font-size:26px;font-weight:800;
+      letter-spacing:-.03em;line-height:1.15;
+      margin-bottom:6px;
+    }
+    .step-header p{font-size:14px;line-height:1.55}
+
+    /* Field progress bar: hide on mobile — top bar handles progress */
+    .step-progress-wrap{display:none}
+
+    /* Fields — room to breathe */
+    .grid,.grid.three{grid-template-columns:1fr;gap:20px}
+
+    /* Labels — subordinate, not competing */
+    label.lbl{font-size:11px;letter-spacing:.07em;opacity:.8}
+
+    /* Inputs — 16px prevents iOS zoom, comfortable tap target */
+    input[type=text],input[type=email],input[type=number],
+    input[type=date],select,textarea{
+      font-size:16px;padding:13px 15px;border-radius:12px;
+    }
+
+    /* Dividers */
+    .divider{margin:24px 0}
+
+    /* Pills — bigger touch target */
+    .pill{padding:11px 16px;font-size:14px;border-radius:10px}
+
+    /* Skill rating legend — stack to avoid overflow */
+    .legend{flex-direction:column;gap:3px;font-size:11px}
+
+    /* Range value badge */
+    .range-val{font-size:14px;padding:7px 10px}
+
+    /* ── Nav — Next dominant, Back minimal ── */
+    .nav{
+      display:flex;align-items:center;
+      gap:10px;padding-top:28px;
+      border-top:1px solid var(--border);
+    }
+    .nav-left{flex-shrink:0}
+    /* Hide disabled Back on step 1 — Next fills full width */
+    .nav-left button[disabled]{display:none}
+    .nav-left button{
+      background:none;border:none;
+      color:var(--muted);font-size:14px;font-weight:600;
+      padding:10px 4px;cursor:pointer;
+    }
+    .nav-right{flex:1;display:flex;justify-content:flex-end}
+    .nav-right .btn-primary{
+      flex:1;text-align:center;
+      padding:14px 20px;font-size:15px;border-radius:14px;
+    }
+    .step-counter{display:none}
+
+    /* Summary */
+    .summary-group h3{font-size:11px}
+    .summary-row{font-size:13px}
+
+    /* Success */
+    .success{padding:40px 0}
+    .success h2{font-size:24px}
+
+    /* Footer: hidden on mobile — no wasted space */
+    .site-footer{display:none}
+  }
+
+  /* Very small phones (≤380px) */
+  @media(max-width:380px){
+    .step-header h2{font-size:22px}
+    .content{padding:24px 16px 28px}
+    .pill{padding:10px 13px;font-size:13px}
+    .nav-right .btn-primary{font-size:14px;padding:13px 16px}
+  }
+
+  /* ── FOOTER ── */
+  .site-footer{
+    width:100%;text-align:center;
+    padding:18px 24px 20px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    margin-top:auto;
+  }
+  .footer-logo{
+    height:28px;width:auto;opacity:.85;
+  }
+  .footer-copy{
+    margin:0;font-size:12px;color:#3a4560;letter-spacing:.02em;
+  }
+  .footer-sub{
+    margin:0;font-size:11px;color:var(--border);letter-spacing:.04em;text-transform:uppercase;
   }
 </style>
 </head>
@@ -230,14 +461,24 @@
 </form>
 
 <div class="page">
+<div class="page-center">
 
-  <div class="top-badge">🏓 SAS Company Tournament</div>
+  <!-- Health bar (desktop only, outside the wizard card) -->
+  <div class="health-bar-wrap" id="healthBarWrap">
+    <div class="health-bar-inner">
+      <span class="health-bar-label">Step Progress</span>
+      <div class="health-bar-track">
+        <div class="health-bar-fill" id="healthBarFill"></div>
+      </div>
+      <span class="health-bar-pct" id="healthBarPct">0%</span>
+    </div>
+  </div>
 
   <div class="wizard">
 
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar">
-      <div class="sidebar-logo">SAS 🏓</div>
+      <div class="sidebar-logo"><img src="sites-at-scale-logo-light-2025.svg" alt="Sites at Scale" style="width:100%;max-width:180px;display:block" /></div>
       <div class="sidebar-title">Player Assessment</div>
 
       <ul class="steps" id="stepList">
@@ -263,8 +504,19 @@
         </li>
       </ul>
 
-      <div class="sidebar-footer">Balanced teams · Fair brackets · Friendly rallies</div>
+      <div class="sidebar-footer"></div>
     </aside>
+
+    <!-- Mobile step indicator — direct child of wizard so content padding doesn't affect it -->
+    <div class="mobile-stepbar" id="mobileStepbar">
+      <div class="msb-top">
+        <img src="sites-at-scale-logo-light-2025.svg" alt="Sites at Scale" class="msb-logo" />
+        <span class="msb-counter" id="msbCounter">1 / 5</span>
+      </div>
+      <div class="msb-progress">
+        <div class="msb-progress-fill" id="msbProgressFill" style="width:20%"></div>
+      </div>
+    </div>
 
     <!-- ── CONTENT ── -->
     <div class="content">
@@ -275,6 +527,10 @@
           <h2>About You</h2>
           <p>Basics so we can contact you and assign you to a team.</p>
         </div>
+        <div class="step-progress-wrap">
+          <div class="step-progress-track"><div class="step-progress-fill" id="progress-0"></div></div>
+          <div class="step-progress-label" id="progress-label-0">0 of 4 fields filled</div>
+        </div>
 
         <div class="grid">
           <div class="field">
@@ -283,19 +539,32 @@
           </div>
           <div class="field">
             <label class="lbl">Email <span class="req">*</span></label>
-            <input type="email" name="email" id="email" required placeholder="you@sas.com" />
+            <input type="email" name="email" id="email" required placeholder="you@sitesatscale.com" />
           </div>
           <div class="field">
             <label class="lbl">Department / Team</label>
-            <input type="text" name="department" id="department" placeholder="e.g. Engineering, HR, Finance" />
+            <select name="department" id="department">
+              <option value="">Select your department</option>
+              <option value="Developer">Developer</option>
+              <option value="Quality Assurance">Quality Assurance</option>
+              <option value="Customer Service">Customer Service</option>
+              <option value="SEO">SEO</option>
+              <option value="Product Owner">Product Owner</option>
+              <option value="Account Manager">Account Manager</option>
+              <option value="Creatives">Creatives</option>
+              <option value="Copywriter">Copywriter</option>
+              <option value="Admin">Admin</option>
+              <option value="Senior Leadership">Senior Leadership</option>
+              <option value="Executive Assistant">Executive Assistant</option>
+              <option value="General Assistant">General Assistant</option>
+            </select>
           </div>
           <div class="field">
             <label class="lbl">Gender <span style="font-weight:400;text-transform:none;font-size:11px">(optional — helps balance brackets)</span></label>
             <select name="gender" id="gender">
-              <option value="">Prefer not to say</option>
+              <option value="">Select</option>
               <option>Male</option>
               <option>Female</option>
-              <option>Non-binary</option>
             </select>
           </div>
         </div>
@@ -316,6 +585,10 @@
         <div class="step-header">
           <h2>Pickleball Experience</h2>
           <p>How long and how often you've played helps us build balanced brackets.</p>
+        </div>
+        <div class="step-progress-wrap">
+          <div class="step-progress-track"><div class="step-progress-fill" id="progress-1"></div></div>
+          <div class="step-progress-label" id="progress-label-1">0 of 6 fields filled</div>
         </div>
 
         <div class="grid">
@@ -404,6 +677,10 @@
           <h2>Skill Self-Rating</h2>
           <p>Slide to your honest level. <b>1</b> = total beginner · <b>10</b> = tournament-level.</p>
         </div>
+        <div class="step-progress-wrap">
+          <div class="step-progress-track"><div class="step-progress-fill" id="progress-2"></div></div>
+          <div class="step-progress-label" id="progress-label-2">Slide to rate yourself</div>
+        </div>
 
         <div class="field">
           <label class="lbl">Your overall pickleball skill</label>
@@ -447,6 +724,10 @@
         <div class="step-header">
           <h2>Athletic Background &amp; Equipment</h2>
           <p>Cross-sport skills transfer to pickleball — and we need to know about paddle availability.</p>
+        </div>
+        <div class="step-progress-wrap">
+          <div class="step-progress-track"><div class="step-progress-fill" id="progress-3"></div></div>
+          <div class="step-progress-label" id="progress-label-3">0 of 6 fields filled</div>
         </div>
 
         <div class="field">
@@ -543,12 +824,23 @@
     </div><!-- /content -->
   </div><!-- /wizard -->
 
+</div><!-- /page-center -->
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <img src="zoneplay-logo.svg" alt="ZonePlay" class="footer-logo" />
+  <p class="footer-copy">Powered by ZonePlay</p>
+</footer>
 
 </div><!-- /page -->
 
 <div class="toast" id="toast"></div>
+<canvas id="confettiCanvas"></canvas>
 
 <script>
+  // ── Footer year ──
+  document.getElementById("footerYear").textContent = new Date().getFullYear();
+
   // ── Range bubbles ──
   const rangePairs = [
     ["selfRating","selfRatingVal", v=>Number(v).toFixed(1)],
@@ -605,6 +897,15 @@
     });
 
     currentStep = to;
+
+    // sync health bar to new step's progress
+    updateStepProgress(to);
+
+    // update mobile step indicator
+    updateMobileStepbar(to);
+
+    // scroll content to top on mobile after step change
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
   // ── Validation ──
@@ -726,8 +1027,225 @@
     document.getElementById("selfRatingVal").textContent = "3.0";
     document.getElementById("fitness").value = 5;
     document.getElementById("fitnessVal").textContent = "5";
+    confettiLaunched = {};
+    const hFill = document.getElementById('healthBarFill');
+    const hPct  = document.getElementById('healthBarPct');
+    if(hFill){ hFill.style.width='0%'; hFill.classList.remove('complete'); }
+    if(hPct) { hPct.textContent='0%';  hPct.classList.remove('complete'); }
+    [0,1,2,3].forEach(i => updateStepProgress(i));
+    updateMobileStepbar(0);
     setStep(0);
   }
+
+  // ── MOBILE STEP INDICATOR ──
+  function updateMobileStepbar(to){
+    const counter = document.getElementById('msbCounter');
+    const fill    = document.getElementById('msbProgressFill');
+    if(counter) counter.textContent = `${to+1} / 5`;
+    if(fill)    fill.style.width = `${((to+1)/5)*100}%`;
+  }
+
+  // ── GAMIFIED STEP PROGRESS ──
+
+  // Fields tracked per step (by id or name)
+  const STEP_FIELDS = [
+    ['fullName','email','department','gender'],       // Step 0
+    ['yearsPlaying','frequency','totalGames','lastPlayed','lessons','tournamentExp'], // Step 1
+    ['selfRating'],                                    // Step 2
+    ['racquetSports','fitness','exerciseFreq','injuries','otherSports','paddle'],    // Step 3
+    [],                                                // Step 4 (review)
+  ];
+
+  // Ranges are always considered filled (they have defaults)
+  const RANGE_FIELDS = new Set(['selfRating','fitness']);
+
+  function isFieldFilled(name){
+    if(RANGE_FIELDS.has(name)) return true;
+    // radio/checkbox groups
+    const radCheck = document.querySelector(`input[name="${name}"]:checked`);
+    if(radCheck) return true;
+    // plain element
+    const el = document.getElementById(name);
+    if(!el) return false;
+    return el.value.trim() !== '' && el.value !== 'Select…';
+  }
+
+  function getStepProgress(stepIdx){
+    const fields = STEP_FIELDS[stepIdx]||[];
+    if(!fields.length) return {filled:0,total:0,pct:100};
+    const filled = fields.filter(f=>isFieldFilled(f)).length;
+    return {filled, total:fields.length, pct:Math.round((filled/fields.length)*100)};
+  }
+
+  let confettiLaunched = {};
+
+  function updateStepProgress(stepIdx){
+    const bar   = document.getElementById('progress-'+stepIdx);
+    const label = document.getElementById('progress-label-'+stepIdx);
+    const {filled,total,pct} = getStepProgress(stepIdx);
+
+    // ── in-panel bar (mobile) ──
+    if(bar){
+      bar.style.width = pct+'%';
+      if(total>0){
+        if(pct===100){
+          bar.classList.add('complete');
+          label.textContent = '✓ Step complete!';
+          label.classList.add('complete');
+        } else {
+          bar.classList.remove('complete');
+          label.classList.remove('complete');
+          label.textContent = filled+' of '+total+' fields filled';
+        }
+      }
+    }
+
+    // ── external health bar (desktop) — only update if this is the active step ──
+    if(stepIdx === currentStep){
+      const hFill = document.getElementById('healthBarFill');
+      const hPct  = document.getElementById('healthBarPct');
+      if(hFill && hPct){
+        hFill.style.width = (total===0 ? 100 : pct)+'%';
+        hPct.textContent  = (total===0 ? 100 : pct)+'%';
+        if(pct===100 || total===0){
+          hFill.classList.add('complete');
+          hPct.classList.add('complete');
+        } else {
+          hFill.classList.remove('complete');
+          hPct.classList.remove('complete');
+        }
+        // hit shake on the track
+        const track = hFill.parentElement;
+        if(track){
+          track.classList.remove('health-bar-hit');
+          void track.offsetWidth;
+          track.classList.add('health-bar-hit');
+          track.addEventListener('animationend',()=>track.classList.remove('health-bar-hit'),{once:true});
+        }
+      }
+    }
+
+    // ── confetti on complete ──
+    if(pct===100 && !confettiLaunched[stepIdx]){
+      confettiLaunched[stepIdx]=true;
+      // use health bar fill on desktop, inner bar on mobile
+      const hFill = document.getElementById('healthBarFill');
+      const target = (hFill && window.innerWidth>700) ? hFill : (bar||hFill);
+      if(target) launchConfetti(target);
+    }
+  }
+
+  // ── Field pop/vibrate ──
+  function triggerFieldPop(el){
+    const field = el.closest('.field')||el.parentElement;
+    if(!field) return;
+    field.classList.remove('field-pop');
+    void field.offsetWidth; // force reflow
+    field.classList.add('field-pop');
+    field.addEventListener('animationend',()=>field.classList.remove('field-pop'),{once:true});
+  }
+
+  // ── Confetti pop from tip of progress bar ──
+  let confettiFrame;
+  function launchConfetti(barEl){
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Origin = right edge of the filled bar
+    const rect = barEl.getBoundingClientRect();
+    const ox = rect.right;
+    const oy = rect.top + rect.height / 2;
+
+    const colors = ['#5E14FF','#8B56FF','#ffb800','#22c55e','#f472b6','#38bdf8','#fb923c'];
+    const pieces = Array.from({length:28},()=>{
+      const angle = Math.random()*Math.PI*2;
+      const speed = 0.8+Math.random()*2.8;
+      return {
+        x:ox, y:oy,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed - 0.8,
+        w:2+Math.random()*5,
+        h:2+Math.random()*4,
+        color:colors[Math.floor(Math.random()*colors.length)],
+        rot:Math.random()*Math.PI*2,
+        rotSpeed:(Math.random()-.5)*0.22,
+        opacity:1,
+        gravity:0.07,
+      };
+    });
+
+    if(confettiFrame) cancelAnimationFrame(confettiFrame);
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      let alive=false;
+      pieces.forEach(p=>{
+        p.vy+=p.gravity;
+        p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotSpeed;
+        p.opacity-=0.028;
+        if(p.opacity<=0) return;
+        alive=true;
+        ctx.save();
+        ctx.globalAlpha=Math.max(0,p.opacity);
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle=p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      if(alive) confettiFrame=requestAnimationFrame(draw);
+      else ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+    draw();
+  }
+
+  // ── Attach listeners to all tracked fields ──
+  (function attachProgressListeners(){
+    STEP_FIELDS.forEach((fields,stepIdx)=>{
+      fields.forEach(name=>{
+        // Plain inputs / selects
+        const el = document.getElementById(name);
+        if(el && el.type!=='radio' && el.type!=='checkbox'){
+          let wasFilled = isFieldFilled(name);
+          const handler = ()=>{
+            const nowFilled = isFieldFilled(name);
+            if(nowFilled && !wasFilled) triggerFieldPop(el);
+            wasFilled = nowFilled;
+            updateStepProgress(stepIdx);
+          };
+          el.addEventListener('input',handler);
+          el.addEventListener('change',handler);
+        }
+        // Radio / checkbox groups
+        document.querySelectorAll(`input[name="${name}"]`).forEach(input=>{
+          if(input.type==='radio'||input.type==='checkbox'){
+            input.addEventListener('change',()=>{
+              triggerFieldPop(input);
+              updateStepProgress(stepIdx);
+            });
+          }
+        });
+      });
+      // Init
+      updateStepProgress(stepIdx);
+    });
+
+    // Ranges: always filled but re-run update on slide for UX
+    document.querySelectorAll('input[type="range"]').forEach(range=>{
+      range.addEventListener('input',()=>{
+        STEP_FIELDS.forEach((fields,stepIdx)=>{
+          if(fields.includes(range.name)) updateStepProgress(stepIdx);
+        });
+      });
+    });
+
+    // Step 2 (selfRating) starts filled — mark it immediately
+    updateStepProgress(2);
+
+    // Init mobile step bar
+    updateMobileStepbar(0);
+  })();
 
 </script>
 </body>
